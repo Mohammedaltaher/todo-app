@@ -1,0 +1,48 @@
+/* Reset any default styles */
+#root {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+
+/* Confetti animation */
+@keyframes confetti {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-50vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Saving indicator */
+#saving-indicator {
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+#saving-indicator.saving-indicator-show {
+  opacity: 1 !important;
+}
+
+/* Line clamp utility */
+.line-clamp-1 {
+  display: -webkit-box; /* legacy support for webkit browsers */
+  display: flex; /* fallback for modern browsers */
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-2 {
+  display: -webkit-box; /* legacy support for webkit browsers */
+  display: flex; /* fallback for modern browsers */
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
