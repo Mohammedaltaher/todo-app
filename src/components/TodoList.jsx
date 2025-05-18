@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTodos } from '../context/TodoContext';
 import TodoItem from './TodoItem';
+import DragDropContainer from './advanced/DragDropContainer';
 
 const TodoList = () => {
   const { todos, isLoading } = useTodos();
@@ -138,17 +139,12 @@ const TodoList = () => {
       </div>
     );
   }
-  
-  return (
+    return (
     <div className="mt-4">
       <FilterAndSortControls />
-      <ul data-testid="todo-list" className="space-y-1">
-        {filteredAndSortedTodos.map((todo) => (
-          <li key={todo.id}>
-            <TodoItem todo={todo} />
-          </li>
-        ))}
-      </ul>
+      <div data-testid="todo-list">
+        <DragDropContainer todos={filteredAndSortedTodos} />
+      </div>
       <div className="text-center mt-6 text-sm text-gray-500">
         {filter === 'all' && `Showing all ${filteredAndSortedTodos.length} tasks`}
         {filter === 'active' && `Showing ${filteredAndSortedTodos.length} active tasks`}

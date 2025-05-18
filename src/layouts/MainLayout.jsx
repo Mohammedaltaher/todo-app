@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
 import Header from '../components/Header';
-import { TaskIcon, ArchiveIcon, SettingsIcon } from '../assets/icons/IconComponent';
+import { TaskIcon, ArchiveIcon, SettingsIcon, CalendarIcon, StatsIcon } from '../assets/icons/IconComponent';
 
 const MainLayout = () => {
   return (
@@ -17,10 +17,9 @@ const MainLayout = () => {
           </svg>
           <span>Saving...</span>
         </div>
-        
-        {/* Navigation */}
-        <div className="max-w-3xl mx-auto mb-6 flex justify-center">
-          <nav className="bg-white rounded-lg shadow-md p-1 flex space-x-1" aria-label="Main Navigation">
+          {/* Navigation */}
+        <div className="max-w-4xl mx-auto mb-6 flex justify-center">
+          <nav className="bg-white rounded-lg shadow-md p-1 flex flex-wrap space-x-1" aria-label="Main Navigation">
             <NavLink
               to="/"
               className={({ isActive }) =>
@@ -31,6 +30,24 @@ const MainLayout = () => {
             >
               <TaskIcon className="h-4 w-4 mr-2" />
               Tasks
+            </NavLink>
+            <NavLink
+              to="/calendar"
+              className={({ isActive }) =>
+                `px-4 py-2 rounded-md transition-colors flex items-center ${isActive ? 'bg-[var(--color-primary)] text-white' : 'text-gray-600 hover:bg-gray-100'}`
+              }
+            >
+              <CalendarIcon className="h-4 w-4 mr-2" />
+              Calendar
+            </NavLink>
+            <NavLink
+              to="/statistics"
+              className={({ isActive }) =>
+                `px-4 py-2 rounded-md transition-colors flex items-center ${isActive ? 'bg-[var(--color-primary)] text-white' : 'text-gray-600 hover:bg-gray-100'}`
+              }
+            >
+              <StatsIcon className="h-4 w-4 mr-2" />
+              Statistics
             </NavLink>
             <NavLink
               to="/archive"

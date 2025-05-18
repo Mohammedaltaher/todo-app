@@ -3,5 +3,9 @@ import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react({
+      include: '**/*.{jsx,js}', // This tells the plugin to process both .jsx and .js files
+    }),
+  ],
 })

@@ -1,12 +1,22 @@
 import React, { useState } from 'react';
 import { useTodos } from '../context/TodoContext';
 import { Button } from './Button';
+import TagManager from './advanced/TagManager';
+import RecurringTasksConfig from './advanced/RecurringTasksConfig';
 
-const TodoForm = () => {
-  const [title, setTitle] = useState('');
+const TodoForm = () => {  const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [priority, setPriority] = useState('medium');
+  const [tags, setTags] = useState([]);
+  const [showRecurringOptions, setShowRecurringOptions] = useState(false);
+  const [recurringConfig, setRecurringConfig] = useState({
+    isRecurring: false,
+    frequency: 'daily',
+    interval: 1,
+    endDate: '',
+    daysOfWeek: []
+  });
   const [error, setError] = useState('');
   const [isFormVisible, setIsFormVisible] = useState(false);
   
@@ -28,15 +38,22 @@ const TodoForm = () => {
     
     // Clear any error
     setError('');
-    
-    // Add the todo
-    addTodo(title, dueDate, description, priority);
+      // Add the todo
+    addTodo(title, dueDate, description, priority, tags, recurringConfig.isRecurring ? recurringConfig : null);
     
     // Reset form
     setTitle('');
     setDescription('');
     setDueDate('');
     setPriority('medium');
+    setTags([]);
+    setRecurringConfig({
+      isRecurring: false,
+      frequency: 'daily',
+      interval: 1,
+      endDate: '',
+      daysOfWeek: []
+    });
     
     // Show success message or animation
     const successMessage = document.getElementById('success-message');
@@ -120,8 +137,7 @@ const TodoForm = () => {
               placeholder="Description"
             ></textarea>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <label htmlFor="dueDate" className="block text-sm font-medium text-gray-700 mb-1">
                 Due Date (optional)
@@ -156,6 +172,45 @@ const TodoForm = () => {
                 ))}
               </div>
             </div>
+          </div>
+
+          {/* Tags Section */}
+          <div className="mb-4">
+            <TagManager 
+              selectedTags={tags} 
+              onTagsChange={setTags} 
+            />
+          </div>
+
+          {/* Recurring Tasks Section */}
+          <div className="mb-4">
+            <div className="flex items-center mb-2">
+              <input
+                type="checkbox"
+                id="isRecurring"
+                checked={recurringConfig.isRecurring}
+                onChange={(e) => {
+                  setRecurringConfig({
+                    ...recurringConfig,
+                    isRecurring: e.target.checked
+                  });
+                  setShowRecurringOptions(e.target.checked);
+                }}
+                className="rounded text-[var(--color-primary)] mr-2"
+              />
+              <label htmlFor="isRecurring" className="text-sm font-medium text-gray-700">
+                Make this a recurring task
+              </label>
+            </div>
+            
+            {showRecurringOptions && (
+              <div className="pl-6 border-l-2 border-gray-200 mt-2">
+                <RecurringTasksConfig
+                  config={recurringConfig}
+                  onChange={setRecurringConfig}
+                />
+              </div>
+            )}
           </div>
           
           <div className="flex justify-end space-x-2">

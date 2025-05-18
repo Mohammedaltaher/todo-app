@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTodos } from '../context/TodoContext';
-import Button from '../components/Button';
+import { Button } from '../components/Button';
+import ExportImportWidget from '../components/advanced/ExportImportWidget';
 import { SettingsIcon } from '../assets/icons/IconComponent';
 
 const SettingsPage = () => {
@@ -59,6 +60,9 @@ const SettingsPage = () => {
           </div>
         </div>
       </div>
+        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+        <ExportImportWidget />
+      </div>
       
       <div className="bg-white rounded-lg shadow-md p-6">
         <h2 className="text-xl font-semibold mb-4">About</h2>
@@ -66,8 +70,6 @@ const SettingsPage = () => {
         <p className="text-gray-600">A simple todo app to manage your tasks efficiently.</p>
       </div>
     </div>
-
-    
   );
 };
 

@@ -1,10 +1,21 @@
 import React, { useState } from 'react';
 import { useTodos } from '../context/TodoContext';
 import { Button } from './Button';
+import SubtaskList from './advanced/SubtaskList';
+import TagManager from './advanced/TagManager';
+import RecurringTasksConfig from './advanced/RecurringTasksConfig';
+import PomodoroTimer from './advanced/PomodoroTimer';
+import { getRecurrenceDescription } from '../utils/dateUtils';
 
-const TodoItem = ({ todo }) => {
-  const { toggleTodo, deleteTodo, updateTodo } = useTodos();
+const TodoItem = ({ todo, isSubtask = false, isDraggable = false }) => {
+  const { toggleTodo, deleteTodo, updateTodo, getSubtasks } = useTodos();
   const [isExpanded, setIsExpanded] = useState(false);
+  const [showRecurringConfig, setShowRecurringConfig] = useState(false);
+  const [showPomodoro, setShowPomodoro] = useState(false);
+  
+  // Get subtasks if any
+  const subtasks = getSubtasks ? getSubtasks(todo.id) : [];
+  const hasSubtasks = subtasks && subtasks.length > 0;
   
   // Format the due date if it exists
   const formattedDate = todo.dueDate 
@@ -52,6 +63,10 @@ const TodoItem = ({ todo }) => {
       if (daysRemaining <= 3) {
         return { label: 'Upcoming', color: 'bg-blue-100 text-blue-800' };
       }
+    }
+    
+    if (todo.isRecurring) {
+      return { label: 'Recurring', color: 'bg-purple-100 text-purple-800' };
     }
     
     return { label: 'In Progress', color: 'bg-purple-100 text-purple-800' };
@@ -134,7 +149,7 @@ const TodoItem = ({ todo }) => {
         todo.completed 
           ? 'border-green-200 bg-green-50' 
           : 'border-gray-200 hover:border-blue-200 hover:shadow-md'
-      }`}
+      } ${isDraggable ? 'cursor-grab active:cursor-grabbing' : ''} ${isSubtask ? 'border-l-2 border-l-gray-400' : ''}`}
     >
       <div className="p-4">
         <div className="flex items-start">
@@ -157,6 +172,16 @@ const TodoItem = ({ todo }) => {
                   {todo.title}
                 </h3>
                 
+                {/* Recurring task indicator */}
+                {todo.isRecurring && (
+                  <div className="text-xs text-purple-600 flex items-center mt-1">
+                    <svg className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
+                    </svg>
+                    {getRecurrenceDescription(todo.recurrencePattern)}
+                  </div>
+                )}
+                
                 {/* Only show description when expanded */}
                 {todo.description && isExpanded && (
                   // Render as direct text node for test compatibility
@@ -175,8 +200,15 @@ const TodoItem = ({ todo }) => {
               </div>
             </div>
             
+            {/* Tags */}
+            {todo.tags && todo.tags.length > 0 && (
+              <div className="mt-2">
+                <TagManager todo={todo} />
+              </div>
+            )}
+            
             {/* Expandable section */}
-            {(todo.description || formattedDate) && (
+            {(todo.description || formattedDate || hasSubtasks) && (
               <div className="mt-2">
                 <button 
                   onClick={() => setIsExpanded(!isExpanded)}
@@ -192,16 +224,13 @@ const TodoItem = ({ todo }) => {
                     <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
                   </svg>
                 </button>
-                {isExpanded && todo.description && (
-                  // Render as direct text node for test compatibility
-                  <>{todo.description}</>
-                )}
+                
                 {isExpanded && (
                   <div className="mt-3 animate-fade-in">
                     {todo.description && (
-                      // Render as direct text node for test compatibility
-                      <>{todo.description}</>
+                      <div className="text-sm text-gray-600 mb-3">{todo.description}</div>
                     )}
+                    
                     <div className="flex flex-wrap gap-x-4 gap-y-2 text-xs text-gray-500 mt-2">
                       {formattedDate && (
                         <div className="flex items-center">
@@ -220,6 +249,65 @@ const TodoItem = ({ todo }) => {
                         </div>
                       )}
                     </div>
+                    
+                    {/* Action buttons */}
+                    <div className="flex flex-wrap gap-2 mt-4">
+                      {!isSubtask && (
+                        <button
+                          onClick={() => setShowRecurringConfig(!showRecurringConfig)}
+                          className="text-xs px-2 py-1 flex items-center bg-purple-100 text-purple-800 rounded hover:bg-purple-200"
+                        >
+                          <svg className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
+                          </svg>
+                          {todo.isRecurring ? 'Edit Recurrence' : 'Make Recurring'}
+                        </button>
+                      )}
+                      
+                      <button
+                        onClick={() => setShowPomodoro(!showPomodoro)}
+                        className="text-xs px-2 py-1 flex items-center bg-red-100 text-red-800 rounded hover:bg-red-200"
+                      >
+                        <svg className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                        </svg>
+                        Pomodoro Timer
+                      </button>
+                      
+                      {!isSubtask && (
+                        <button
+                          onClick={() => updateTodo(todo.id, { tags: todo.tags || [] })}
+                          className="text-xs px-2 py-1 flex items-center bg-blue-100 text-blue-800 rounded hover:bg-blue-200"
+                        >
+                          <svg className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+                          </svg>
+                          Edit Tags
+                        </button>
+                      )}
+                    </div>
+                    
+                    {/* Recurring task configuration */}
+                    {showRecurringConfig && (
+                      <div className="mt-4 border-t pt-3">
+                        <RecurringTasksConfig 
+                          todo={todo} 
+                          onClose={() => setShowRecurringConfig(false)} 
+                        />
+                      </div>
+                    )}
+                    
+                    {/* Pomodoro timer */}
+                    {showPomodoro && (
+                      <div className="mt-4 border-t pt-3">
+                        <PomodoroTimer todoId={todo.id} />
+                      </div>
+                    )}
+                    
+                    {/* Subtasks */}
+                    {!isSubtask && (
+                      <SubtaskList parentId={todo.id} />
+                    )}
                   </div>
                 )}
               </div>

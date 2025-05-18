@@ -21,11 +21,18 @@
   --color-text-secondary: #4b5563;
   --color-text-tertiary: #9ca3af;
   --color-text-inverse: #ffffff;
-
   /* Priorities */
   --color-priority-high: #ef4444;
+  --color-priority-high-rgb: 239, 68, 68;
   --color-priority-medium: #f59e0b;
+  --color-priority-medium-rgb: 245, 158, 11;
   --color-priority-low: #10b981;
+  --color-priority-low-rgb: 16, 185, 129;
+  
+  /* Pomodoro Timer */
+  --color-pomodoro-work: #ef4444;
+  --color-pomodoro-break: #10b981;
+  --color-pomodoro-long-break: #3b82f6;
 
   /* Animation durations */
   --duration-fast: 150ms;

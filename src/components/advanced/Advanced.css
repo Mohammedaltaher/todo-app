@@ -1,0 +1,206 @@
+/* Advanced components CSS */
+
+/* Tags */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text);
+  border-radius: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.tag:hover {
+  background-color: rgba(var(--color-primary-rgb), 0.1);
+}
+
+.tag-remove {
+  margin-left: 0.25rem;
+  border-radius: 50%;
+  width: 1rem;
+  height: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.tag-remove:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Calendar View */
+.calendar-container {
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background-color: #e5e7eb;
+}
+
+.calendar-day {
+  background-color: white;
+  aspect-ratio: 1 / 1;
+  padding: 0.5rem;
+  position: relative;
+}
+
+.calendar-day-number {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.calendar-day-content {
+  margin-top: 1.25rem;
+  height: calc(100% - 1.25rem);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.calendar-day-task {
+  font-size: 0.65rem;
+  padding: 0.25rem;
+  margin-bottom: 0.25rem;
+  border-radius: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.calendar-day-task.priority-high {
+  background-color: rgba(var(--color-priority-high-rgb), 0.15);
+  border-left: 2px solid var(--color-priority-high);
+}
+
+.calendar-day-task.priority-medium {
+  background-color: rgba(var(--color-priority-medium-rgb), 0.15);
+  border-left: 2px solid var(--color-priority-medium);
+}
+
+.calendar-day-task.priority-low {
+  background-color: rgba(var(--color-priority-low-rgb), 0.15);
+  border-left: 2px solid var(--color-priority-low);
+}
+
+/* Drag and Drop */
+.draggable-item {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.draggable-item:hover {
+  cursor: grab;
+}
+
+.draggable-item.dragging {
+  cursor: grabbing;
+  transform: scale(1.02);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+/* Pomodoro Timer */
+.pomodoro-container {
+  text-align: center;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.pomodoro-timer {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 1rem 0;
+}
+
+.pomodoro-state {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+}
+
+.pomodoro-progress {
+  height: 0.5rem;
+  border-radius: 0.25rem;
+  background-color: #e5e7eb;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.pomodoro-progress-bar {
+  height: 100%;
+  background-color: var(--color-primary);
+  transition: width 1s linear;
+}
+
+/* Activity Log */
+.activity-log {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.activity-item {
+  padding: 0.75rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-timestamp {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.activity-action {
+  font-weight: 500;
+}
+
+/* Stats and Gamification */
+.stats-card {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+}
+
+.stats-title {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+.stats-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.streak-flame {
+  color: #f97316;
+  margin-right: 0.25rem;
+}
