@@ -1,0 +1,95 @@
+# Todo List Application - Phase 3: Advanced Features
+
+## Features for Phase 3
+1. Subtasks/nested tasks
+2. Recurring tasks (daily, weekly, monthly)
+3. Calendar view for tasks
+4. Tags/categories for tasks
+5. Drag and drop to reorder tasks
+6. Task history and activity log
+7. Export/import tasks (CSV, JSON)
+8. Pomodoro timer integration
+9. Basic gamification (streaks, completion stats)
+
+## Tech Stack Additions
+1. react-beautiful-dnd for drag and drop
+2. react-calendar or @wojtekmaj/react-daterange-picker
+3. JSON-to-CSV conversion utilities
+4. LocalStorage space optimization
+
+## shadcn/ui Components for Phase 3
+1. Calendar - For calendar view
+2. Badge - For tags/categories
+3. Accordion - For subtasks
+4. Tabs - For different views (list, calendar)
+5. Avatar - For gamification elements
+6. Progress - For Pomodoro timer
+7. Sheet - For activity log/history
+
+## Project Structure Additions
+```
+src/
+  components/
+    core/
+      # Enhanced versions of existing components
+    advanced/
+      SubtaskList.jsx
+      RecurringTasksConfig.jsx
+      CalendarView.jsx
+      TagManager.jsx
+      DragDropContainer.jsx
+      PomodoroTimer.jsx
+      ActivityLog.jsx
+      ExportImport.jsx
+    ui/
+      # Additional UI components
+  hooks/
+    useDragDrop.js
+    usePomodoro.js
+    useCalendar.js
+    useGamification.js
+  context/
+    # Enhanced contexts with new features
+  utils/
+    dateUtils.js
+    exportImport.js
+    statsCalculator.js
+  pages/
+    Calendar.jsx
+    Statistics.jsx
+    Settings.jsx
+  services/
+    syncService.js     # For import/export functionality
+```
+
+## Implementation Steps
+1. Implement subtasks functionality
+2. Add recurring tasks logic
+3. Create calendar view for visual task management
+4. Implement tagging/categorization system
+5. Add drag and drop reordering
+6. Create activity log and history tracking
+7. Implement export/import functionality
+8. Add Pomodoro timer feature
+9. Implement basic gamification elements
+
+## Estimated Timeline
+- Subtasks and recurring tasks: 3-4 days
+- Calendar view: 2-3 days
+- Tags/categories: 2 days
+- Drag and drop: 2 days
+- Activity log and history: 2 days
+- Export/import: 1-2 days
+- Pomodoro timer: 2 days
+- Gamification elements: 2-3 days
+- Testing and refinements: 3-4 days
+- Total: 19-22 days for Phase 3
+
+## Success Criteria
+- Users can create complex task hierarchies with subtasks
+- Time management is enhanced with recurring tasks and Pomodoro timer
+- Visual task management through calendar view
+- Organization improved with tags and categories
+- Task prioritization through drag and drop
+- Data portability through import/export
+- Engagement increased through gamification elements

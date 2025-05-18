@@ -1,0 +1,70 @@
+# Todo List Application - Phase 1: MVP
+
+## Core Features for MVP
+1. Add new tasks with title and due date
+2. Mark tasks as complete/incomplete
+3. Delete tasks
+4. List view of all tasks
+5. Local storage for data persistence
+
+## Tech Stack for MVP
+1. React (using Vite for fast setup)
+2. State management: React Context API
+3. UI: Basic shadcn/ui components
+4. Styling: Tailwind CSS (included with shadcn/ui)
+5. Local storage for data persistence
+
+## shadcn/ui Components for MVP
+1. Button - For actions like add, delete
+2. Checkbox - For marking tasks complete/incomplete
+3. Card - For task items
+4. Dialog - For adding new tasks
+5. Form components - For task input
+
+## Project Structure for MVP
+```
+src/
+  components/
+    TodoForm.jsx       # Form for adding new tasks
+    TodoList.jsx       # Container for all task items
+    TodoItem.jsx       # Individual task component
+    Header.jsx         # App header with title
+  context/
+    TodoContext.jsx    # State management for tasks
+  utils/
+    localStorage.js    # Functions to save/load from localStorage
+  App.jsx              # Main app component
+  main.jsx             # Entry point
+```
+
+## Implementation Steps
+1. Set up Vite project with React
+   ```bash
+   npm create vite@latest todo-app -- --template react
+   cd todo-app
+   npm install
+   ```
+
+2. Install and set up shadcn/ui
+   ```bash
+   npm install -D tailwindcss postcss autoprefixer
+   npx tailwindcss init -p
+   npm install @radix-ui/react-checkbox @radix-ui/react-dialog
+   ```
+
+3. Create TodoContext for state management
+4. Implement basic UI components
+5. Add localStorage functionality for persistence
+6. Test core functionality
+
+## Estimated Timeline
+- Setup and boilerplate: 1 day
+- Core components implementation: 2-3 days
+- Testing and bug fixes: 1 day
+- Total: 4-5 days for MVP
+
+## Success Criteria
+- Users can create, complete, and delete tasks
+- Data persists between browser sessions
+- Basic but clean UI using shadcn/ui components
+- Responsive design that works on mobile and desktop

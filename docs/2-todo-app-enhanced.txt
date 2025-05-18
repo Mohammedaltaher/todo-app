@@ -1,0 +1,75 @@
+# Todo List Application - Phase 2: Enhanced Experience
+
+## Features for Phase 2
+1. Edit existing tasks
+3. Sort tasks by due date or alphabetically
+4. Task description field (expanded task details)
+5. Task priority levels (High, Medium, Low)
+6. Dark/Light theme toggle
+8. Search functionality
+
+## Tech Stack Additions
+2. More advanced shadcn/ui components
+3. Form validation with React Hook Form
+
+## shadcn/ui Components for Phase 2
+1. Tabs - For filtering tasks by status
+2. DropdownMenu - For sorting options
+3. Select - For priority selection
+4. Switch - For theme toggle
+5. Tooltip - For action buttons
+6. Command - For search functionality 
+
+## Project Structure Additions
+```
+src/
+  components/
+    core/
+      TodoForm.jsx      # Enhanced with validation
+      TodoList.jsx
+      TodoItem.jsx      # Enhanced with priority indicators
+      TodoFilter.jsx    # New component for filtering/sorting
+      Header.jsx        # Enhanced with theme toggle and search
+    ui/
+      ThemeToggle.jsx
+      PriorityBadge.jsx
+      SearchBar.jsx
+  hooks/
+    useTodos.js         # Enhanced with filtering/sorting
+    useTheme.js         # For theme management
+  context/
+    TodoContext.jsx     # Enhanced with more actions
+    ThemeContext.jsx    # For theme state
+  utils/
+    localStorage.js
+    filterUtils.js      # Helper functions for filtering/sorting
+  pages/
+    TaskList.jsx
+    TaskDetail.jsx      # New page for viewing/editing a task
+  App.jsx               # Enhanced with routing
+  routes.jsx            # For route definitions
+```
+
+## Implementation Steps
+1. Enhance todo context with additional functionality
+2. Add theme context and toggle functionality
+3. Create filtering and sorting components
+4. Implement form validation for task creation/editing
+5. Add task detail view with edit capabilities
+6. Implement search functionality
+7. Improve responsive design
+
+## Estimated Timeline
+- Enhanced state management: 1-2 days
+- UI improvements and theme toggle: 2 days
+- Filtering, sorting, and search: 2-3 days
+- Task detail page and editing: 2 days
+- Testing and refinements: 2 days
+- Total: 9-11 days for Phase 2
+
+## Success Criteria
+- Users can filter, sort, and search tasks efficiently
+- Tasks can be edited with validated form inputs
+- UI adapts to user preference with theme toggle
+- Application works smoothly across different devices
+- Enhanced visual hierarchy with priority indicators
