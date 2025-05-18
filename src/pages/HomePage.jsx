@@ -8,23 +8,31 @@ import { TaskIcon } from '../assets/icons/IconComponent';
 
 const HomePage = () => {
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-2">
+    <div className="w-full h-full flex flex-col md:flex-row">
+      {/* Main Task Content Area (70%) */}
+      <div className="w-full md:w-[70%] h-full overflow-auto pr-0 md:pr-4">
+        <div className="bg-white/90 rounded-2xl shadow-md p-5 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
           <TodoForm />
-          
-          <div className="mt-8">
-            <h2 className="text-xl font-bold mb-4 flex items-center text-gray-800">
-              <TaskIcon className="h-5 w-5 mr-2 text-[var(--color-primary)]" />
-              My Tasks
-            </h2>
-            <TodoList />
-          </div>
         </div>
         
-        <div className="space-y-6">
-          <PomodoroTimer />
-          <ActivityLogWidget />
+        <div className="mt-6 bg-white/90 rounded-2xl shadow-md p-5 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
+          <h2 className="text-2xl font-semibold mb-4 flex items-center text-gray-800">
+            <TaskIcon className="h-5 w-5 mr-2 text-indigo-500" />
+            My Tasks
+          </h2>
+          <TodoList />
+        </div>
+      </div>
+      
+      {/* Sidebar (30%) */}
+      <div className="w-full md:w-[30%] mt-6 md:mt-0 h-full overflow-auto">
+        <div className="space-y-6 sticky top-0">
+          <div className="bg-white/90 rounded-2xl shadow-md p-5 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
+            <PomodoroTimer />
+          </div>
+          <div className="bg-white/90 rounded-2xl shadow-md p-5 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
+            <ActivityLogWidget />
+          </div>
         </div>
       </div>
     </div>

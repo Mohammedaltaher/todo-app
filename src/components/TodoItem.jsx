@@ -12,6 +12,7 @@ const TodoItem = ({ todo, isSubtask = false, isDraggable = false }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showRecurringConfig, setShowRecurringConfig] = useState(false);
   const [showPomodoro, setShowPomodoro] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
   
   // Get subtasks if any
   const subtasks = getSubtasks ? getSubtasks(todo.id) : [];
@@ -77,9 +78,9 @@ const TodoItem = ({ todo, isSubtask = false, isDraggable = false }) => {
   // Priority badge
   const getPriorityBadge = () => {
     const colors = {
-      high: 'bg-[var(--color-priority-high)] text-white',
-      medium: 'bg-[var(--color-priority-medium)] text-white',
-      low: 'bg-[var(--color-priority-low)] text-white',
+      high: 'bg-red-500 text-white',
+      medium: 'bg-orange-500 text-white',
+      low: 'bg-green-500 text-white',
     };
     
     return (
@@ -91,6 +92,8 @@ const TodoItem = ({ todo, isSubtask = false, isDraggable = false }) => {
   
   // Show confetti animation on task completion
   const handleToggleComplete = () => {
+    setIsAnimating(true);
+    
     // If the task is being completed (not being un-completed)
     if (!todo.completed) {
       // Create and animate confetti particles
@@ -145,36 +148,51 @@ const TodoItem = ({ todo, isSubtask = false, isDraggable = false }) => {
   return (
     <div 
       id={`todo-item-${todo.id}`}
-      className={`relative overflow-hidden mb-3 bg-white rounded-lg border transition-all ${
+      className={`relative overflow-hidden mb-3 bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 ${
+        isAnimating ? 'animate-pulse' : ''
+      } ${
         todo.completed 
           ? 'border-green-200 bg-green-50' 
-          : 'border-gray-200 hover:border-blue-200 hover:shadow-md'
-      } ${isDraggable ? 'cursor-grab active:cursor-grabbing' : ''} ${isSubtask ? 'border-l-2 border-l-gray-400' : ''}`}
+          : 'border-gray-100 hover:border-blue-200'
+      } ${isDraggable ? 'cursor-grab active:cursor-grabbing' : ''} ${isSubtask ? 'border-l-4 border-l-indigo-400' : ''}`}
+      onAnimationEnd={() => setIsAnimating(false)}
     >
-      <div className="p-4">
+      <div className="p-5">
         <div className="flex items-start">
           <div className="flex-shrink-0 pt-1">
-            <input
-              type="checkbox"
-              checked={todo.completed}
-              onChange={handleToggleComplete}
-              className="h-5 w-5 rounded border-gray-300 text-[var(--color-primary)] 
-                focus:ring-[var(--color-primary)] transition-all cursor-pointer"
-            />
+            <div className="relative inline-block">
+              <input
+                type="checkbox"
+                checked={todo.completed}
+                onChange={handleToggleComplete}
+                className="peer absolute opacity-0 w-5 h-5 cursor-pointer z-10"
+                aria-label={`Mark ${todo.title} as ${todo.completed ? 'incomplete' : 'complete'}`}
+              />
+              <div className="w-5 h-5 border-2 rounded-full transition-all duration-300 flex items-center justify-center
+                peer-checked:bg-gradient-to-r peer-checked:from-green-400 peer-checked:to-green-500 
+                peer-checked:border-green-500 border-gray-300
+                peer-hover:border-indigo-400">
+                {todo.completed && (
+                  <svg className="h-3 w-3 text-white" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                )}
+              </div>
+            </div>
           </div>
           
-          <div className="ml-3 flex-grow">
-            <div className="flex flex-wrap items-center justify-between">
+          <div className="ml-3 flex-1">
+            <div className="flex flex-col md:flex-row md:items-start justify-between">
               <div className="pr-8">
-                <h3 className={`text-md font-medium ${
-                  todo.completed ? 'line-through text-gray-500' : 'text-gray-900'
+                <h3 className={`text-base font-medium ${
+                  todo.completed ? 'line-through text-gray-500' : 'text-gray-800'
                 }`}>
                   {todo.title}
                 </h3>
                 
                 {/* Recurring task indicator */}
                 {todo.isRecurring && (
-                  <div className="text-xs text-purple-600 flex items-center mt-1">
+                  <div className="text-xs text-indigo-600 flex items-center mt-1">
                     <svg className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
                     </svg>
@@ -184,40 +202,41 @@ const TodoItem = ({ todo, isSubtask = false, isDraggable = false }) => {
                 
                 {/* Only show description when expanded */}
                 {todo.description && isExpanded && (
-                  // Render as direct text node for test compatibility
-                  <>{todo.description}</>
+                  <div className="mt-2 text-sm text-gray-600">{todo.description}</div>
                 )}
               </div>
               
-              <div className="flex space-x-2 ml-auto items-center mt-1">
+              <div className="flex flex-wrap gap-2 mt-2 md:mt-0 md:ml-auto items-center">
                 {getPriorityBadge()}
                 <span className={`text-xs px-2 py-1 rounded-full ${statusColor}`}>
                   {statusLabel}
                 </span>
                 {formattedDate && (
-                  <span className="text-xs text-gray-500 ml-2">{formattedDate}</span>
+                  <span className="text-xs py-1 px-2 rounded-full bg-gray-100 text-gray-700">
+                    {formattedDate}
+                  </span>
                 )}
               </div>
             </div>
             
             {/* Tags */}
             {todo.tags && todo.tags.length > 0 && (
-              <div className="mt-2">
+              <div className="mt-3">
                 <TagManager todo={todo} />
               </div>
             )}
             
             {/* Expandable section */}
             {(todo.description || formattedDate || hasSubtasks) && (
-              <div className="mt-2">
+              <div className="mt-3">
                 <button 
                   onClick={() => setIsExpanded(!isExpanded)}
-                  className="text-xs text-gray-500 hover:text-gray-700 flex items-center"
+                  className="text-xs text-indigo-500 hover:text-indigo-700 flex items-center px-2 py-1 rounded-full bg-indigo-50 hover:bg-indigo-100 transition-colors"
                 >
                   {isExpanded ? 'Show Less' : 'Show More'}
                   <svg 
                     xmlns="http://www.w3.org/2000/svg" 
-                    className={`h-4 w-4 ml-1 transition-transform ${isExpanded ? 'rotate-180' : ''}`} 
+                    className={`h-4 w-4 ml-1 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} 
                     viewBox="0 0 20 20" 
                     fill="currentColor"
                   >
@@ -226,15 +245,12 @@ const TodoItem = ({ todo, isSubtask = false, isDraggable = false }) => {
                 </button>
                 
                 {isExpanded && (
-                  <div className="mt-3 animate-fade-in">
-                    {todo.description && (
-                      <div className="text-sm text-gray-600 mb-3">{todo.description}</div>
-                    )}
-                    
-                    <div className="flex flex-wrap gap-x-4 gap-y-2 text-xs text-gray-500 mt-2">
+                  <div className="mt-4 pt-3 border-t border-gray-100 animate-fade-in">
+                    {/* Existing expanded content... */}
+                    <div className="flex flex-wrap gap-4 text-xs text-gray-600 mt-2">
                       {formattedDate && (
                         <div className="flex items-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 text-indigo-500" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
                           </svg>
                           <span>Due: {todo.dueDate ? new Date(todo.dueDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : ''}</span>
@@ -242,7 +258,7 @@ const TodoItem = ({ todo, isSubtask = false, isDraggable = false }) => {
                       )}
                       {todo.createdAt && (
                         <div className="flex items-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 text-indigo-500" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                           </svg>
                           <span>Created: {new Date(todo.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
@@ -252,12 +268,22 @@ const TodoItem = ({ todo, isSubtask = false, isDraggable = false }) => {
                     
                     {/* Action buttons */}
                     <div className="flex flex-wrap gap-2 mt-4">
+                      <button
+                        onClick={() => updateTodo(todo.id, todo)}
+                        className="text-xs px-3 py-1.5 flex items-center rounded-full bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition-colors shadow-sm hover:shadow"
+                      >
+                        <svg className="h-3.5 w-3.5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                          <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                        </svg>
+                        Edit
+                      </button>
+                    
                       {!isSubtask && (
                         <button
                           onClick={() => setShowRecurringConfig(!showRecurringConfig)}
-                          className="text-xs px-2 py-1 flex items-center bg-purple-100 text-purple-800 rounded hover:bg-purple-200"
+                          className="text-xs px-3 py-1.5 flex items-center rounded-full bg-purple-50 text-purple-700 hover:bg-purple-100 transition-colors shadow-sm hover:shadow"
                         >
-                          <svg className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                          <svg className="h-3.5 w-3.5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
                           </svg>
                           {todo.isRecurring ? 'Edit Recurrence' : 'Make Recurring'}
@@ -266,47 +292,53 @@ const TodoItem = ({ todo, isSubtask = false, isDraggable = false }) => {
                       
                       <button
                         onClick={() => setShowPomodoro(!showPomodoro)}
-                        className="text-xs px-2 py-1 flex items-center bg-red-100 text-red-800 rounded hover:bg-red-200"
+                        className="text-xs px-3 py-1.5 flex items-center rounded-full bg-red-50 text-red-700 hover:bg-red-100 transition-colors shadow-sm hover:shadow"
                       >
-                        <svg className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                        <svg className="h-3.5 w-3.5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                         </svg>
-                        Pomodoro Timer
+                        Focus Timer
                       </button>
                       
                       {!isSubtask && (
                         <button
                           onClick={() => updateTodo(todo.id, { tags: todo.tags || [] })}
-                          className="text-xs px-2 py-1 flex items-center bg-blue-100 text-blue-800 rounded hover:bg-blue-200"
+                          className="text-xs px-3 py-1.5 flex items-center rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors shadow-sm hover:shadow"
                         >
-                          <svg className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                          <svg className="h-3.5 w-3.5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
                           </svg>
-                          Edit Tags
+                          Manage Tags
                         </button>
                       )}
                     </div>
                     
                     {/* Recurring task configuration */}
                     {showRecurringConfig && (
-                      <div className="mt-4 border-t pt-3">
-                        <RecurringTasksConfig 
-                          todo={todo} 
-                          onClose={() => setShowRecurringConfig(false)} 
-                        />
+                      <div className="mt-4 pt-4 border-t border-gray-100">
+                        <div className="bg-purple-50 rounded-xl p-3 shadow-inner">
+                          <RecurringTasksConfig 
+                            todo={todo} 
+                            onClose={() => setShowRecurringConfig(false)} 
+                          />
+                        </div>
                       </div>
                     )}
                     
                     {/* Pomodoro timer */}
                     {showPomodoro && (
-                      <div className="mt-4 border-t pt-3">
-                        <PomodoroTimer todoId={todo.id} />
+                      <div className="mt-4 pt-4 border-t border-gray-100">
+                        <div className="bg-red-50 rounded-xl p-3 shadow-inner">
+                          <PomodoroTimer todoId={todo.id} />
+                        </div>
                       </div>
                     )}
                     
                     {/* Subtasks */}
                     {!isSubtask && (
-                      <SubtaskList parentId={todo.id} />
+                      <div className="mt-4 pt-4 border-t border-gray-100">
+                        <SubtaskList parentId={todo.id} />
+                      </div>
                     )}
                   </div>
                 )}
@@ -316,17 +348,23 @@ const TodoItem = ({ todo, isSubtask = false, isDraggable = false }) => {
         </div>
       </div>
       
-      <div 
-        className={`absolute right-2 top-2 transition-opacity ${
-          isExpanded ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-        }`}
-      >
+      <div className="absolute right-3 top-3 flex items-center gap-1">
+        <button 
+          onClick={() => updateTodo(todo.id, todo)}
+          className="text-gray-400 hover:text-indigo-500 p-1.5 rounded-full hover:bg-indigo-50 transition-colors"
+          aria-label="Edit task"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+          </svg>
+        </button>
+        
         <button 
           onClick={() => deleteTodo(todo.id)}
-          className="text-gray-400 hover:text-red-500 p-1"
+          className="text-gray-400 hover:text-red-500 p-1.5 rounded-full hover:bg-red-50 transition-colors"
           aria-label="Delete task"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
           </svg>
         </button>
