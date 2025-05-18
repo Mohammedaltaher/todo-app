@@ -45,8 +45,7 @@ describe('TodoForm Component', () => {
     const submitButton = screen.getByRole('button', { name: /save/i });
     expect(submitButton).toBeInTheDocument();
   });
-  
-  it('submits the form with correct data', async () => {
+    it('submits the form with correct data', async () => {
     // Mock addTodo function
     const mockAddTodo = vi.fn();
     vi.spyOn(TodoContext, 'useTodos').mockReturnValue({
@@ -66,22 +65,21 @@ describe('TodoForm Component', () => {
     const descriptionInput = screen.getByPlaceholderText(/description/i);
     await userEvent.type(descriptionInput, 'This is a test task');
     
-    // Select priority
-    const priorityDropdown = screen.getByLabelText(/priority/i);
-    await userEvent.selectOptions(priorityDropdown, 'high');
+    // Select priority (using button click since priority is implemented with buttons)
+    const highPriorityButton = screen.getByRole('button', { name: /high/i });
+    await userEvent.click(highPriorityButton);
     
     // Submit the form
     const submitButton = screen.getByRole('button', { name: /save/i });
     await userEvent.click(submitButton);
-    
-    // Check if addTodo was called with correct data
+      // Check if addTodo was called with correct data
     expect(mockAddTodo).toHaveBeenCalledTimes(1);
-    expect(mockAddTodo).toHaveBeenCalledWith(expect.objectContaining({
-      title: 'New Test Task',
-      description: 'This is a test task',
-      priority: 'high',
-      completed: false
-    }));
+    expect(mockAddTodo).toHaveBeenCalledWith(
+      'New Test Task',
+      '',  // Due date is empty because we didn't set it in the test
+      'This is a test task',
+      'high'
+    );
     
     // Form should collapse after submission
     await waitFor(() => {

@@ -67,6 +67,15 @@ export const TodoProvider = ({ children }) => {
     });
   };
 
+  // Update a todo
+  const updateTodo = (id, updatedTodo) => {
+    setTodos(prevTodos =>
+      prevTodos.map(todo =>
+        todo.id === id ? { ...todo, ...updatedTodo } : todo
+      )
+    );
+  };
+
   // Delete a todo
   const deleteTodo = async (id) => {
     await save(() => {
@@ -93,6 +102,7 @@ export const TodoProvider = ({ children }) => {
         editTodo,
         deleteTodo,
         archiveCompleted,
+        updateTodo,
       }}
     >
       {children}

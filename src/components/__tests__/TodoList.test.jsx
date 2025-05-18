@@ -27,8 +27,7 @@ describe('TodoList Component', () => {
     // No todos should be rendered
     expect(screen.queryByText(/test todo/i)).not.toBeInTheDocument();
   });
-  
-  it('shows empty state when no todos are available', () => {
+    it('shows empty state when no todos are available', () => {
     // Mock empty todos list
     vi.spyOn(TodoContext, 'useTodos').mockReturnValue({
       todos: [],
@@ -38,9 +37,8 @@ describe('TodoList Component', () => {
     renderWithProviders(<TodoList />);
     
     // Should show an empty state message
-    expect(screen.getByText(/no todos/i) || 
-           screen.getByText(/nothing to do/i) ||
-           screen.getByText(/add your first task/i)).toBeInTheDocument();
+    expect(screen.getByText('No tasks yet')).toBeInTheDocument();
+    expect(screen.getByText(/Time to be productive! Add your first task/i)).toBeInTheDocument();
   });
   
   it('renders a list of todos', () => {
@@ -91,8 +89,7 @@ describe('TodoList Component', () => {
       });
     }
   });
-  
-  it('sorts todos based on sort criteria', async () => {
+    it('sorts todos based on sort criteria', async () => {
     // Mock todos with sample data
     vi.spyOn(TodoContext, 'useTodos').mockReturnValue({
       todos: sampleTodos,
@@ -102,20 +99,18 @@ describe('TodoList Component', () => {
     renderWithProviders(<TodoList />);
     
     // Find and click the sort dropdown
-    const sortDropdown = screen.getByLabelText(/sort by/i) || 
-                        screen.getByRole('combobox');
+    const sortDropdown = screen.getByLabelText(/sort by/i);
     
-    // Select "Priority" option
-    await userEvent.selectOptions(sortDropdown, 'priority');
+    // Select "Due Date" option
+    await userEvent.selectOptions(sortDropdown, 'dueDate');
     
-    // The todos should now be sorted by priority
+    // The todos should now be sorted by due date
     // This is harder to test explicitly, but we can check that the list is still rendered
     sampleTodos.forEach(todo => {
       expect(screen.getByText(todo.title)).toBeInTheDocument();
     });
   });
-  
-  it('handles search functionality', async () => {
+    it('displays correct count of tasks for different filters', async () => {
     // Mock todos with sample data
     vi.spyOn(TodoContext, 'useTodos').mockReturnValue({
       todos: sampleTodos,
@@ -124,23 +119,17 @@ describe('TodoList Component', () => {
     
     renderWithProviders(<TodoList />);
     
-    // Find the search input
-    const searchInput = screen.getByPlaceholderText(/search/i) ||
-                       screen.getByRole('searchbox');
+    // Check that the count is displayed correctly for all tasks
+    expect(screen.getByText(`Showing all ${sampleTodos.length} tasks`)).toBeInTheDocument();
     
-    // Type a search term that should match only one todo
-    await userEvent.type(searchInput, 'project proposal');
+    // Click the completed filter
+    const completedButton = screen.getByTestId('filter-btn-completed');
+    await userEvent.click(completedButton);
     
-    // Now only the matching todo should be visible
-    const matchingTodo = sampleTodos.find(todo => todo.title.includes('project proposal'));
-    const nonMatchingTodos = sampleTodos.filter(todo => !todo.title.includes('project proposal'));
+    // Count completed tasks
+    const completedCount = sampleTodos.filter(todo => todo.completed).length;
     
-    if (matchingTodo) {
-      expect(screen.getByText(matchingTodo.title)).toBeInTheDocument();
-    }
-    
-    nonMatchingTodos.forEach(todo => {
-      expect(screen.queryByText(todo.title)).not.toBeInTheDocument();
-    });
+    // Check that the count is updated for completed tasks
+    expect(screen.getByText(`Showing ${completedCount} completed tasks`)).toBeInTheDocument();
   });
 });

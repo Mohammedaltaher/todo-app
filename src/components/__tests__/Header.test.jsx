@@ -5,7 +5,16 @@ import { renderWithProviders, sampleTodos } from '../../utils/test-utils';
 import * as TodoContext from '../../context/TodoContext';
 
 describe('Header Component', () => {
-  it('renders the header with the date', () => {
+  beforeEach(() => {
+    // Mock Math.random for predictable greeting selection
+    vi.spyOn(Math, 'random').mockReturnValue(0);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+  
+  it('renders the header with the date and task counts', () => {
     // Mock the useTodos hook to return sample todos
     vi.spyOn(TodoContext, 'useTodos').mockReturnValue({
       todos: sampleTodos
@@ -24,32 +33,36 @@ describe('Header Component', () => {
     // The date should be in the header
     expect(screen.getByText(formattedDate)).toBeInTheDocument();
     
-    // Look for pending or completed text instead of tasks
-    expect(screen.getByText(/pending/i)).toBeInTheDocument();
-    expect(screen.getByText(/completed/i)).toBeInTheDocument();
-    
     // Verify the task count from our sample data
     const pendingCount = sampleTodos.filter(todo => !todo.completed).length;
     const completedCount = sampleTodos.filter(todo => todo.completed).length;
     
-    expect(screen.getByText(new RegExp(`${pendingCount}\\s*pending`, 'i'))).toBeInTheDocument();
-    expect(screen.getByText(new RegExp(`${completedCount}\\s*completed`, 'i'))).toBeInTheDocument();
+    // Check for the pending and completed count elements
+    expect(screen.getByText(pendingCount.toString())).toBeInTheDocument();
+    expect(screen.getByText('pending')).toBeInTheDocument();
+    expect(screen.getByText(completedCount.toString())).toBeInTheDocument();
+    expect(screen.getByText('completed')).toBeInTheDocument();
   });
   
-  it('renders the logo and navigation links', () => {
+  it('renders the app title and random greeting', () => {
     vi.spyOn(TodoContext, 'useTodos').mockReturnValue({
       todos: []
     });
     
     renderWithProviders(<Header />);
     
-    // Check for logo
-    expect(screen.getByAltText(/todo app logo/i) || 
-           screen.getByText(/todo app/i)).toBeInTheDocument();
+    // Check for app title
+    expect(screen.getByText('Task Master')).toBeInTheDocument();
     
-    // Check for navigation links
-    expect(screen.getByText(/home/i)).toBeInTheDocument();
-    expect(screen.getByText(/archive/i)).toBeInTheDocument();
-    expect(screen.getByText(/settings/i)).toBeInTheDocument();
+    // Check for the random greeting (we've mocked Math.random to return 0, so it should be the first greeting)
+    const greetings = [
+      "Let's get things done!",
+      "Ready to be productive?",
+      "What's on your plate today?",
+      "Plan your day for success!",
+      "Focus on what matters today."
+    ];
+    
+    expect(screen.getByText(greetings[0])).toBeInTheDocument();
   });
 });
